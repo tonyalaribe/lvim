@@ -59,12 +59,11 @@ lvim.keys.normal_mode["K"] = ":lua require'lspsaga.hover'.render_hover_doc()<CR>
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.dashboard.active = true
-lvim.builtin.terminal.active = false 
+lvim.builtin.terminal.active = false
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
 
 require("nvim-treesitter.install").compilers = { "gcc-11" }
--- lvim.builtin.treesitter.install.compilers = { "gcc-11" }
 lvim.builtin.treesitter.compilers = { "gcc-11" }
 
 -- if you don't want all the parsers change this to a table of the ones you want
@@ -123,6 +122,7 @@ vmap > >gv
 " vim.cmd('let g:nvim_tree_git_hl = 1')
 nmap <silent> <F3> :NvimTreeToggle<CR>
 
+hi Normal guibg=NONE ctermbg=NONE
 ]])
 
 -- generic LSP settings
@@ -306,7 +306,7 @@ lvim.builtin.which_key.mappings["z"] = {
 require('onedarkpro').load()
 
 require('lspconfig').tailwindcss.setup({
-  filetypes = {"haskell", "html", "javascript"}, 
+  filetypes = {"haskell", "html", "javascript"},
   settings = {
     tailwindCSS = {
       includeLanguages = {
@@ -318,3 +318,5 @@ require('lspconfig').tailwindcss.setup({
     }
   }
 })
+
+vim.cmd('hi Normal guibg=NONE ctermbg=NONE')
