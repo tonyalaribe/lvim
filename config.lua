@@ -73,8 +73,8 @@ lvim.builtin.treesitter.ensure_installed = {
 --lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
-local saga = require("lspsaga")
-saga.init_lsp_saga()
+-- local saga = require("lspsaga")
+-- saga.init_lsp_saga()
 
 vim.cmd([[
   imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
