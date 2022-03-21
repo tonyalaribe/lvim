@@ -51,8 +51,8 @@ lvim.builtin.terminal.active = false
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
 
-require("nvim-treesitter.install").compilers = { "gcc-11" }
-lvim.builtin.treesitter.compilers = { "gcc-11" }
+-- require("nvim-treesitter.install").compilers = { "gcc-11" }
+-- lvim.builtin.treesitter.compilers = { "gcc-11" }
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
