@@ -11,16 +11,29 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "onedarker"
---lvim.colorscheme = "onedarkpro"
+lvim.colorscheme = "darkplus"
+
+-- vim.g.transparent_background = true        -- transparent background(Default: false)
+vim.g.italic_comments = true               -- italic comments(Default: true)
+vim.g.italic_keywords = true               -- italic keywords(Default: true)
+vim.g.italic_functions = true              -- italic functions(Default: false)
+vim.g.italic_variables = true              -- italic variables(Default: false)
+
+lvim.lsp.automatic_servers_installation = true
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
--- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["gt"] = ":pop<cr>"
 lvim.keys.normal_mode["K"] = ":lua require'lspsaga.hover'.render_hover_doc()<CR>"
 
+
+-- unmap a default keymapping
+-- vim.keymap.del("n", "<C-Up>")
+-- override a default keymapping
+-- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
+
+require('telescope').load_extension('projects')
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
@@ -41,44 +54,71 @@ lvim.builtin.telescope.defaults.mappings = {
 }
 
 -- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+lvim.builtin.which_key.mappings["t"] = {
+  name = "+Trouble",
+  r = { "<cmd>Trouble lsp_references<cr>", "References" },
+  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
+  d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
+  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
+  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
+  w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
+}
 
+lvim.builtin.which_key.mappings["l?"] = { "<cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostics" }
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
-lvim.builtin.dashboard.active = true
-lvim.builtin.terminal.active = false
+lvim.builtin.alpha.active = true
+lvim.builtin.alpha.mode = "dashboard"
+lvim.builtin.notify.active = true
+lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
--- require("nvim-treesitter.install").compilers = { "gcc-11" }
--- lvim.builtin.treesitter.compilers = { "gcc-11" }
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
-	"bash",
-	"c",
-	"javascript",
-	"json",
-	"lua",
-	"python",
-	"typescript",
-	"css",
-	"rust",
-	"java",
-	"yaml",
-	"haskell",
+  "bash",
+  "c",
+  "javascript",
+  "json",
+  "lua",
+  "python",
+  "typescript",
+  "tsx",
+  "css",
+  "rust",
+  "java",
+  "yaml",
+  "go",
+  "haskell",
 }
 
---lvim.builtin.treesitter.ignore_install = { "haskell" }
+-- lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
+
+-- Autocommands (https://neovim.io/doc/user/autocmd.html)
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = { "*.json", "*.jsonc" },
+  -- enable wrap mode for json files only
+  command = "setlocal wrap",
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "zsh",
+  callback = function()
+    -- let treesitter use bash highlight for zsh files as well
+    require("nvim-treesitter.highlight").attach(0, "bash")
+  end,
+})
+
 
 -- local saga = require("lspsaga")
 -- saga.init_lsp_saga()
 
 vim.cmd([[
-  imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
-  let g:copilot_no_tab_map = v:true
+  "imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+  "let g:copilot_no_tab_map = v:true
 
   " nnoremap <Space> i<Space><Esc>
 
@@ -117,61 +157,99 @@ vim.cmd([[
   nnoremap <leader>- :wincmd _<cr>:wincmd \|<cr>
   nnoremap <leader>= :wincmd =<cr>
 
+  " Start interactive EasyAlign in visual mode (e.g. vipga)
+  xmap ga <Plug>(EasyAlign)
+
+  " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+  nmap ga <Plug>(EasyAlign)
+
 ]])
+
 
 -- Additional Plugins
 lvim.plugins = {
-	{"folke/tokyonight.nvim" },
-	{"folke/trouble.nvim",cmd = "TroubleToggle"},
-	{
-		"tpope/vim-fugitive",
-		cmd = {
-			"G",
-			"Git",
-			"Gdiffsplit",
-			"Gread",
-			"Gwrite",
-			"Ggrep",
-			"GMove",
-			"GDelete",
-			"GBrowse",
-			"GRemove",
-			"GRename",
-			"Glgrep",
-			"Gedit",
-		},
-		ft = { "fugitive" },
-	},
-  {'sbdchd/neoformat'},
-	{"sindrets/diffview.nvim",event = "BufRead"},
-	{"folke/lsp-colors.nvim",event = "BufRead"},
-	{"ray-x/lsp_signature.nvim",event = "BufRead",config = function() require("lsp_signature").setup() end},
-  {"tami5/lspsaga.nvim"},
-	{"simrat39/symbols-outline.nvim",cmd = "SymbolsOutline"},
-	{
-		"lukas-reineke/indent-blankline.nvim",
-		event = "BufRead",
-		setup = function()
-			vim.g.indentLine_enabled = 1
-			vim.g.indent_blankline_char = "▏"
-			vim.g.indent_blankline_filetype_exclude = { "help", "terminal", "dashboard" }
-			vim.g.indent_blankline_buftype_exclude = { "terminal" }
-			vim.g.indent_blankline_show_trailing_blankline_indent = false
-			vim.g.indent_blankline_show_first_indent_level = false
-		end,
-	},
-	{ "ndmitchell/ghcid", rtp = "plugins/nvim" },
-	{ "michaelb/sniprun", run = "bash ./install.sh" },
-	{ "ckipp01/stylua-nvim" },
-  { "github/copilot.vim" },
-  { "neovimhaskell/haskell-vim" },
-  { "nathom/filetype.nvim" },
-  { "beauwilliams/focus.nvim", config = function() require("focus").setup() end },
-  { "christoomey/vim-tmux-navigator"},
+  -- { "beauwilliams/focus.nvim", config = function() require("focus").setup() end },
+  {"ahmedkhalf/project.nvim", config = function() require("project_nvim").setup {} end },
+  {"christoomey/vim-tmux-navigator"},
+  {"ckipp01/stylua-nvim" },
+  {"michaelb/sniprun", run = "bash ./install.sh" },
+  {"nathom/filetype.nvim" },
+  {"ndmitchell/ghcid", rtp = "plugins/nvim" },
+  {"neovimhaskell/haskell-vim" },
+  {'glacambre/firenvim', run = function() vim.fn['firenvim#install'](0) end },
+  {"folke/lsp-colors.nvim",event = "BufRead"},
+  {"folke/tokyonight.nvim" },
+  {"folke/trouble.nvim",cmd = "TroubleToggle"},
+  {"lunarvim/colorschemes"},
+  {"ray-x/lsp_signature.nvim",event = "BufRead",config = function() require("lsp_signature").setup() end},
   {"romgrk/nvim-treesitter-context"},
+  {"simrat39/symbols-outline.nvim",cmd = "SymbolsOutline"},
+  {"sindrets/diffview.nvim",event = "BufRead"},
+  {"tami5/lspsaga.nvim"},
+  {'j-hui/fidget.nvim', config = function() require"fidget".setup{} end},
+  {'junegunn/vim-easy-align'},
+  {'mfussenegger/nvim-dap'},
+  {'neovim/nvim-lspconfig'},
+  {'nvim-lua/plenary.nvim'},
+  {'sbdchd/neoformat'},
+  {'stevearc/dressing.nvim'},
+  {'wakatime/vim-wakatime'},
+  {'xiyaowong/nvim-transparent'},
+  {'echasnovski/mini.nvim'},
+  {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  },
+  {
+    "simrat39/rust-tools.nvim",
+    config = function()
+      local lsp_installer_servers = require "nvim-lsp-installer.servers"
+      local _, requested_server = lsp_installer_servers.get_server "rust_analyzer"
+      require("rust-tools").setup({
+        tools = {
+          autoSetHints = true,
+          hover_with_actions = true,
+          runnables = {
+            use_telescope = true,
+          },
+        },
+        server = {
+          cmd_env = requested_server._default_options.cmd_env,
+          on_attach = require("lvim.lsp").common_on_attach,
+          on_init = require("lvim.lsp").common_on_init,
+        },
+      })
+    end,
+    ft = { "rust", "rs" },
+  },
+  {
+    "tpope/vim-fugitive",
+    cmd = {"G","Git","Gdiffsplit","Gread","Gwrite","Ggrep","GMove","GDelete","GBrowse","GRemove","GRename","Glgrep","Gedit",},
+    ft = { "fugitive" },
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    event = "BufRead",
+    setup = function()
+      vim.g.indentLine_enabled = 1
+      vim.g.indent_blankline_char = "▏"
+      vim.g.indent_blankline_filetype_exclude = { "help", "terminal", "dashboard" }
+      vim.g.indent_blankline_buftype_exclude = { "terminal" }
+      vim.g.indent_blankline_show_trailing_blankline_indent = false
+      vim.g.indent_blankline_show_first_indent_level = false
+    end,
+  },
 }
 
-lvim.builtin.which_key.mappings["t"] = {
+
+lvim.builtin.which_key.mappings["lt"] = {
 	name = "Trouble",
 	r = { "<cmd>Trouble lsp_references<cr>", "References" },
 	f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
@@ -220,4 +298,68 @@ require('lspconfig').tailwindcss.setup({
   }
 })
 
-vim.cmd('hi Normal guibg=NONE ctermbg=NONE')
+require("transparent").setup({
+  enable = true, -- boolean: enable transparent
+  extra_groups = { -- table/string: additional groups that should be cleared
+    -- In particular, when you set it to 'all', that means all available groups
+
+    -- example of akinsho/nvim-bufferline.lua
+    "BufferLineTabClose",
+    "BufferlineBufferSelected",
+    "BufferLineFill",
+    "BufferLineBackground",
+    "BufferLineSeparator",
+    "BufferLineIndicatorSelected",
+  },
+  exclude = {}, -- table: groups you don't want to clear
+})
+
+-- require("nvim-tree").setup({
+--   respect_buf_cwd = true,
+--   update_cwd = true,
+--   update_focused_file = {
+--     enable = true,
+--     update_cwd = true
+--   },
+-- })
+
+local autosave = require("autosave")
+autosave.setup(
+  {
+    enabled = false,
+    execution_message = "AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"),
+    events = {"InsertLeave",},
+    conditions = {
+        exists = true,
+        filename_is_not = {},
+        filetype_is_not = {},
+        modifiable = true
+    },
+    write_all_buffers = false,
+    on_off_commands = true,
+    clean_command_line_interval = 0,
+    debounce_delay = 135
+  }
+)
+
+
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+local util = require 'lspconfig.util'
+
+-- Check if the config is already defined (useful when reloading this file)
+if not configs.doctests then
+ configs.doctests = {
+   default_config = {
+     cmd = {'doctests', 'lsp'};
+     settings = {};
+     filetypes = { 'go', 'gomod', 'gotmpl' },
+     root_dir = function(fname)
+       return util.root_pattern 'go.work'(fname) or util.root_pattern('go.mod', '.git')(fname)
+     end,
+     single_file_support = true,
+   };
+ }
+end
+
+lspconfig.doctests.setup{}
