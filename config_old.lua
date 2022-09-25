@@ -1,12 +1,12 @@
 --[[
 ]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT https://google.com
+-- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "darkplus"
--- lvim.colorscheme = "onedarker"
+-- lvim.colorscheme = "onedarkplus"
 
 -- vim.g.transparent_background = true        -- transparent background(Default: false)
 vim.g.italic_comments = true -- italic comments(Default: true)
@@ -159,22 +159,24 @@ vim.cmd([[
   " vim.g.nvim_tree_disable_netrw = 0
 ]])
 
-
 -- Additional Plugins
 lvim.plugins = {
+  -- { "beauwilliams/focus.nvim", config = function() require("focus").setup() end },
   { "christoomey/vim-tmux-navigator" },
+  { "ckipp01/stylua-nvim" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
-  { "echasnovski/mini.nvim" },
+  { "felipec/vim-sanegx", event = "BufRead" },
   { "folke/lsp-colors.nvim", event = "BufRead" },
   { "folke/tokyonight.nvim" },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
-  { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
   { "gpanders/editorconfig.nvim" },
   { "j-hui/fidget.nvim", config = function() require "fidget".setup {} end },
   { "junegunn/vim-easy-align" },
   { "liuchengxu/vista.vim" },
   { "lunarvim/colorschemes" },
-  { "m-demare/hlargs.nvim", config = function() require('hlargs').setup() end }, -- highlight arguments
+  { "m-demare/hlargs.nvim", config = function() require('hlargs').setup() end },
+  { "mfussenegger/nvim-dap" },
+  { "michaelb/sniprun", run = "bash ./install.sh" },
   { "nathom/filetype.nvim" },
   { "ndmitchell/ghcid", rtp = "plugins/nvim" },
   { "neovimhaskell/haskell-vim" },
@@ -186,6 +188,7 @@ lvim.plugins = {
   { "stevearc/dressing.nvim" },
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
+  { "windwp/nvim-spectre" },
   { "xiyaowong/nvim-transparent" },
   { "simrat39/symbols-outline.nvim", config = function() require('symbols-outline').setup() end },
   {
@@ -199,13 +202,6 @@ lvim.plugins = {
       vim.g.indent_blankline_show_trailing_blankline_indent = false
       vim.g.indent_blankline_show_first_indent_level = false
     end,
-  },
-  {
-    "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
-    config = function()
-      require("todo-comments").setup {}
-    end
   },
   {
     "simrat39/rust-tools.nvim",
@@ -257,6 +253,13 @@ lvim.plugins = {
     end,
     ft = { "rust", "rs" },
   },
+  {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup {}
+    end
+  },
 }
 
 
@@ -290,6 +293,7 @@ lvim.builtin.which_key.mappings["r"] = {
   hD = { "<cmd>RustUnsetInlayHints<cr>", "Disable Inlay Hints All buffs" },
   ha = { "<cmd>RustHoverActions<cr>", "Hover Actions" },
 }
+
 
 lvim.builtin.which_key.mappings["sB"] = {
   "<cmd>lua require'telescope.builtin'.buffers{}<CR>", "Buffers"
