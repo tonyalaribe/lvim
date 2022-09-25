@@ -166,6 +166,7 @@ lvim.plugins = {
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   { "echasnovski/mini.nvim" },
   { "folke/lsp-colors.nvim", event = "BufRead" },
+  { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
   { "folke/tokyonight.nvim" },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
   { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
@@ -182,12 +183,12 @@ lvim.plugins = {
   { "ray-x/lsp_signature.nvim", event = "BufRead", config = function() require("lsp_signature").setup() end },
   { "romgrk/nvim-treesitter-context" },
   { "sbdchd/neoformat" },
+  { "simrat39/symbols-outline.nvim", config = function() require('symbols-outline').setup() end },
   { "sindrets/diffview.nvim", event = "BufRead" },
   { "stevearc/dressing.nvim" },
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
-  { "simrat39/symbols-outline.nvim", config = function() require('symbols-outline').setup() end },
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufRead",
@@ -199,13 +200,6 @@ lvim.plugins = {
       vim.g.indent_blankline_show_trailing_blankline_indent = false
       vim.g.indent_blankline_show_first_indent_level = false
     end,
-  },
-  {
-    "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
-    config = function()
-      require("todo-comments").setup {}
-    end
   },
   {
     "simrat39/rust-tools.nvim",
