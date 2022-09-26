@@ -162,12 +162,12 @@ vim.cmd([[
 
 -- Additional Plugins
 lvim.plugins = {
+  { "ThePrimeagen/vim-be-good"},
   { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   { "echasnovski/mini.nvim" },
   { "folke/lsp-colors.nvim", event = "BufRead" },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
-  { "folke/tokyonight.nvim" },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
   { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
   { "gpanders/editorconfig.nvim" },
@@ -189,6 +189,26 @@ lvim.plugins = {
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
+  { 'echasnovski/mini.nvim' },
+  {'ThePrimeagen/harpoon'},
+  {'chentoast/marks.nvim', config = function() require'marks'.setup {} end},
+  { "ekickx/clipboard-image.nvim", config=function()
+      require'clipboard-image'.setup {
+        default = {
+          img_name = function ()
+            vim.fn.inputsave()
+            local name = vim.fn.input('Name: ')
+            vim.fn.inputrestore()
+            if name == nil or name == '' then
+              return os.date('%y-%m-%d-%H-%M-%S')
+            end
+            return name
+          end,
+        }
+      }
+    end
+  },
+  { "akinsho/git-conflict.nvim", tag = "*", config = function() require('git-conflict').setup()end},
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufRead",
@@ -285,6 +305,17 @@ lvim.builtin.which_key.mappings["r"] = {
   ha = { "<cmd>RustHoverActions<cr>", "Hover Actions" },
 }
 
+lvim.builtin.which_key.mappings["h"] = {
+  name = "Harpoon",
+  a = { '<cmd>lua require("harpoon.mark").add_file()<cr>', "mark file" },
+  m = { '<cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>', "menu" },
+}
+lvim.builtin.which_key.mappings["h1"] = { '<cmd>lua require("harpoon.ui").nav_file(1)<cr>', "open 1" }
+lvim.builtin.which_key.mappings["h2"] = { '<cmd>lua require("harpoon.ui").nav_file(2)<cr>', "open 2" }
+lvim.builtin.which_key.mappings["h3"] = { '<cmd>lua require("harpoon.ui").nav_file(3)<cr>', "open 3" }
+lvim.builtin.which_key.mappings["h]"] = { '<cmd>lua require("harpoon.ui").nav_next()<cr>', "Nav next" }
+lvim.builtin.which_key.mappings["h["] = { '<cmd>lua require("harpoon.ui").nav_prev()<cr>', "Nav prev" }
+
 lvim.builtin.which_key.mappings["sB"] = {
   "<cmd>lua require'telescope.builtin'.buffers{}<CR>", "Buffers"
 }
@@ -320,12 +351,9 @@ require("transparent").setup({
     -- In particular, when you set it to 'all', that means all available groups
 
     -- example of akinsho/nvim-bufferline.lua
-    "BufferLineTabClose",
-    "BufferlineBufferSelected",
-    "BufferLineFill",
-    "BufferLineBackground",
-    "BufferLineSeparator",
-    "BufferLineIndicatorSelected",
+    "NvimTreeNormal",
+    "NvimTreeBg",
+    "all",
   },
   exclude = {}, -- table: groups you don't want to clear
 })
@@ -353,3 +381,31 @@ if not configs.doctests then
 end
 
 lspconfig.doctests.setup {}
+
+require('mini.ai').setup()
+
+-- require('mini.base16').setup({
+--   palette = {
+--     base00 = '#112641',
+--     base01 = '#3a475e',
+--     base02 = '#606b81',
+--     base03 = '#8691a7',
+--     base04 = '#d5dc81',
+--     base05 = '#e2e98f',
+--     base06 = '#eff69c',
+--     base07 = '#fcffaa',
+--     base08 = '#ffcfa0',
+--     base09 = '#cc7e46',
+--     base0A = '#46a436',
+--     base0B = '#9ff895',
+--     base0C = '#ca6ecf',
+--     base0D = '#42f7ff',
+--     base0E = '#ffc4ff',
+--     base0F = '#00a5c5',
+--   },
+--   use_cterm = true,
+--   plugins = {
+--     default = false,
+--     ['echasnovski/mini.nvim'] = true,
+--   },
+-- })
