@@ -162,7 +162,7 @@ vim.cmd([[
 
 -- Additional Plugins
 lvim.plugins = {
-  { "ThePrimeagen/vim-be-good"},
+  { "ThePrimeagen/vim-be-good" },
   { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   { "echasnovski/mini.nvim" },
@@ -189,26 +189,25 @@ lvim.plugins = {
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
-  { 'echasnovski/mini.nvim' },
-  {'ThePrimeagen/harpoon'},
-  {'chentoast/marks.nvim', config = function() require'marks'.setup {} end},
-  { "ekickx/clipboard-image.nvim", config=function()
-      require'clipboard-image'.setup {
-        default = {
-          img_name = function ()
-            vim.fn.inputsave()
-            local name = vim.fn.input('Name: ')
-            vim.fn.inputrestore()
-            if name == nil or name == '' then
-              return os.date('%y-%m-%d-%H-%M-%S')
-            end
-            return name
-          end,
-        }
+  { 'ThePrimeagen/harpoon' },
+  { 'chentoast/marks.nvim', config = function() require 'marks'.setup() end },
+  { "akinsho/git-conflict.nvim", tag = "*", config = function() require('git-conflict').setup() end },
+  { "ekickx/clipboard-image.nvim", config = function()
+    require 'clipboard-image'.setup {
+      default = {
+        img_name = function()
+          vim.fn.inputsave()
+          local name = vim.fn.input('Name: ')
+          vim.fn.inputrestore()
+          if name == nil or name == '' then
+            return os.date('%y-%m-%d-%H-%M-%S')
+          end
+          return name
+        end,
       }
-    end
+    }
+  end
   },
-  { "akinsho/git-conflict.nvim", tag = "*", config = function() require('git-conflict').setup()end},
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufRead",
