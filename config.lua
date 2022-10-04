@@ -5,7 +5,8 @@
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "darkplus"
+-- lvim.colorscheme = "darkplus"
+lvim.colorscheme = "tokyonight"
 -- lvim.colorscheme = "onedarker"
 
 -- vim.g.transparent_background = true        -- transparent background(Default: false)
@@ -15,6 +16,9 @@ vim.g.italic_functions = true -- italic functions(Default: false)
 vim.g.italic_variables = true -- italic variables(Default: false)
 lvim.lsp.installer.setup.automatic_servers_installation = true
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "rust_analyzer" })
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
