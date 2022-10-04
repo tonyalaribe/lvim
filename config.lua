@@ -19,6 +19,7 @@ vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "ru
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.ch = 0
 
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
@@ -166,7 +167,7 @@ vim.cmd([[
 
 -- Additional Plugins
 lvim.plugins = {
-  { "ThePrimeagen/vim-be-good" },
+  { "David-Kunz/markid" },
   { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   { "echasnovski/mini.nvim" },
@@ -348,18 +349,22 @@ require('lspconfig').tailwindcss.setup({
   }
 })
 
-require("transparent").setup({
-  enable = true, -- boolean: enable transparent
-  extra_groups = { -- table/string: additional groups that should be cleared
-    -- In particular, when you set it to 'all', that means all available groups
+require 'nvim-treesitter.configs'.setup {
+  markid = { enable = true }
+}
 
-    -- example of akinsho/nvim-bufferline.lua
-    "NvimTreeNormal",
-    "NvimTreeBg",
-    "all",
-  },
-  exclude = {}, -- table: groups you don't want to clear
-})
+-- require("transparent").setup({
+--   enable = true, -- boolean: enable transparent
+--   extra_groups = { -- table/string: additional groups that should be cleared
+--     -- In particular, when you set it to 'all', that means all available groups
+
+--     -- example of akinsho/nvim-bufferline.lua
+--     "NvimTreeNormal",
+--     "NvimTreeBg",
+--     "all",
+--   },
+--   exclude = {}, -- table: groups you don't want to clear
+-- })
 
 
 require("symbols-outline").setup()
