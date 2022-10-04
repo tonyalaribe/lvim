@@ -119,9 +119,6 @@ vim.g.loaded_netrw = true -- or 1
 vim.g.loaded_netrwPlugin = true -- or 1
 lvim.builtin.treesitter.rainbow.enable = true
 
--- local saga = require("lspsaga")
--- saga.init_lsp_saga()
-
 vim.cmd([[
   let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
   let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
@@ -145,9 +142,9 @@ vim.cmd([[
   vmap < <gv
   vmap > >gv
 
-  " vim.cmd('let g:nvim_tree_git_hl = 1')
   nmap <silent> <F3> :NvimTreeToggle<CR>
   nmap <silent> <F4> :SymbolsOutline<CR>
+  "nmap <silent> <F4> :LSoutlineToggle<CR>
 
   " automatically rebalance windows on vim resize
   autocmd VimResized * :wincmd =
@@ -170,7 +167,6 @@ lvim.plugins = {
   { "David-Kunz/markid" },
   { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
-  { "echasnovski/mini.nvim" },
   { "folke/lsp-colors.nvim", event = "BufRead" },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
@@ -277,6 +273,54 @@ lvim.plugins = {
   },
 }
 
+lvim.builtin.which_key.mappings["s"] = {
+  name = "Search",
+  b = { "<cmd>Telescope buffers<cr>", "Buffers" },
+  B = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
+  c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
+  f = { "<cmd>Telescope find_files<cr>", "Find File" },
+  h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
+  H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
+  m = { "<cmd>Telescope marks<cr>", "Man Pages" },
+  M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
+  r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
+  R = { "<cmd>Telescope registers<cr>", "Registers" },
+  t = { "<cmd>Telescope live_grep<cr>", "Text" },
+  k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
+  C = { "<cmd>Telescope commands<cr>", "Commands" },
+  p = {
+    "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
+    "Colorscheme with Preview",
+  },
+}
+
+lvim.builtin.which_key.mappings["l"]={
+  name = "LSP",
+  a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
+  A = { "<cmd>Lspsaga code_action<CR>", "Code Action saga"},
+  d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
+  w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
+  f = { require("lvim.lsp.utils").format, "Format" },
+  i = { "<cmd>LspInfo<cr>", "Info" },
+  I = { "<cmd>Mason<cr>", "Mason Info" },
+  j = {
+    vim.diagnostic.goto_next,
+    "Next Diagnostic",
+  },
+  k = {
+    vim.diagnostic.goto_prev,
+    "Prev Diagnostic",
+  },
+  l = { vim.lsp.codelens.run, "CodeLens Action" },
+  q = { vim.diagnostic.setloclist, "Quickfix" },
+  r = { vim.lsp.buf.rename, "Rename" },
+  s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
+  S = {
+    "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+    "Workspace Symbols",
+  },
+  e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
+}
 
 lvim.builtin.which_key.mappings["lt"] = {
   name = "Trouble",
@@ -320,9 +364,10 @@ lvim.builtin.which_key.mappings["h3"] = { '<cmd>lua require("harpoon.ui").nav_fi
 lvim.builtin.which_key.mappings["h]"] = { '<cmd>lua require("harpoon.ui").nav_next()<cr>', "Nav next" }
 lvim.builtin.which_key.mappings["h["] = { '<cmd>lua require("harpoon.ui").nav_prev()<cr>', "Nav prev" }
 
-lvim.builtin.which_key.mappings["sB"] = {
-  "<cmd>lua require'telescope.builtin'.buffers{}<CR>", "Buffers"
-}
+
+-- local saga = require("lspsaga")
+-- saga.init_lsp_saga()
+
 
 vim.cmd([[
   " jump diagnostic
@@ -391,29 +436,3 @@ end
 lspconfig.doctests.setup {}
 
 require('mini.ai').setup()
-
--- require('mini.base16').setup({
---   palette = {
---     base00 = '#112641',
---     base01 = '#3a475e',
---     base02 = '#606b81',
---     base03 = '#8691a7',
---     base04 = '#d5dc81',
---     base05 = '#e2e98f',
---     base06 = '#eff69c',
---     base07 = '#fcffaa',
---     base08 = '#ffcfa0',
---     base09 = '#cc7e46',
---     base0A = '#46a436',
---     base0B = '#9ff895',
---     base0C = '#ca6ecf',
---     base0D = '#42f7ff',
---     base0E = '#ffc4ff',
---     base0F = '#00a5c5',
---   },
---   use_cterm = true,
---   plugins = {
---     default = false,
---     ['echasnovski/mini.nvim'] = true,
---   },
--- })
