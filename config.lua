@@ -19,7 +19,7 @@ vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "ru
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.o.ch = 0
+-- vim.o.ch = 0
 
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
@@ -193,18 +193,17 @@ lvim.plugins = {
   { 'echasnovski/mini.nvim' },
   {'chentoast/marks.nvim', config = function() require'marks'.setup {} end},
   { "ekickx/clipboard-image.nvim", config=function()
-      require'clipboard-image'.setup {
-        default = {
-          img_name = function ()
-            vim.fn.inputsave()
-            local name = vim.fn.input('Name: ')
-            vim.fn.inputrestore()
-            if name == nil or name == '' then
-              return os.date('%y-%m-%d-%H-%M-%S')
-            end
-            return name
-          end,
-        }
+    require'clipboard-image'.setup {
+      default = {
+        img_name = function ()
+          vim.fn.inputsave()
+          local name = vim.fn.input('Name: ')
+          vim.fn.inputrestore()
+          if name == nil or name == '' then
+            return os.date('%y-%m-%d-%H-%M-%S')
+          end
+          return name
+        end,
       }
     }
   end
