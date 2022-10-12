@@ -191,11 +191,18 @@ lvim.plugins = {
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
   { 'echasnovski/mini.nvim' },
-  {'chentoast/marks.nvim', config = function() require'marks'.setup {} end},
-  { "ekickx/clipboard-image.nvim", config=function()
-    require'clipboard-image'.setup {
+  { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
+  {
+    "nvim-neotest/neotest",
+    requires = { "MrcJkb/neotest-haskell", },
+    config = function()
+      require("neotest").setup({ adapters = { require("neotest-haskell"), } })
+    end
+  },
+  { "ekickx/clipboard-image.nvim", config = function()
+    require 'clipboard-image'.setup {
       default = {
-        img_name = function ()
+        img_name = function()
           vim.fn.inputsave()
           local name = vim.fn.input('Name: ')
           vim.fn.inputrestore()
@@ -281,10 +288,10 @@ lvim.builtin.which_key.mappings["s"] = {
   },
 }
 
-lvim.builtin.which_key.mappings["l"]={
+lvim.builtin.which_key.mappings["l"] = {
   name = "LSP",
   a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-  A = { "<cmd>Lspsaga code_action<CR>", "Code Action saga"},
+  A = { "<cmd>Lspsaga code_action<CR>", "Code Action saga" },
   d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
   w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
   f = { require("lvim.lsp.utils").format, "Format" },
