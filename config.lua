@@ -17,9 +17,18 @@ vim.g.italic_variables = true -- italic variables(Default: false)
 lvim.lsp.installer.setup.automatic_servers_installation = true
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "rust_analyzer" })
 
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+-- vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+-- vim.opt.foldlevel = 20
+-- for nvim-ufo based folding
+vim.o.foldcolumn = "1"
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+
 -- vim.o.ch = 0
+
 
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
@@ -193,6 +202,22 @@ lvim.plugins = {
   { 'echasnovski/mini.nvim' },
   { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
+  {
+    "kevinhwang91/nvim-ufo",
+    run = ':TSUpdate',
+    event = { "BufReadPre" },
+    requires = "kevinhwang91/promise-async",
+    config = function()
+      -- https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
+      require("ufo").setup({
+        provider_selector = function(bufnr, filetype, buftype)
+          return { 'treesitter', 'indent' }
+        end
+      })
+      vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+      vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+    end,
+  },
   {
     "nvim-neotest/neotest",
     requires = { "MrcJkb/neotest-haskell", },
