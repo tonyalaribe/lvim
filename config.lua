@@ -191,6 +191,7 @@ lvim.plugins = {
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
   { 'echasnovski/mini.nvim' },
+  { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
   {
     "nvim-neotest/neotest",
