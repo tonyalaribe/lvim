@@ -5,8 +5,10 @@
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
--- lvim.colorscheme = "darkplus"
-lvim.colorscheme = "tokyonight"
+lvim.colorscheme = "darkplus"
+-- lvim.colorscheme = "tokyonight-day"
+-- lvim.colorscheme = "tomorrow"
+-- lvim.colorscheme = "moonlight"
 -- lvim.colorscheme = "onedarker"
 
 -- vim.g.transparent_background = true        -- transparent background(Default: false)
@@ -17,14 +19,14 @@ vim.g.italic_variables = true -- italic variables(Default: false)
 lvim.lsp.installer.setup.automatic_servers_installation = true
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "rust_analyzer" })
 
--- vim.opt.foldmethod = "expr"
--- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
--- vim.opt.foldlevel = 20
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 20
 -- for nvim-ufo based folding
-vim.o.foldcolumn = "1"
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
+-- vim.o.foldcolumn = "1"
+-- vim.o.foldlevel = 99
+-- vim.o.foldlevelstart = 99
+-- vim.o.foldenable = true
 
 
 -- vim.o.ch = 0
@@ -173,17 +175,17 @@ vim.cmd([[
 
 -- Additional Plugins
 lvim.plugins = {
-  { "David-Kunz/markid" },
-  { "christoomey/vim-tmux-navigator" },
+  -- { "David-Kunz/markid" },
+  -- { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
-  { "folke/lsp-colors.nvim", event = "BufRead" },
+  -- { "folke/lsp-colors.nvim", event = "BufRead" },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
-  { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
+  -- { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
   { "gpanders/editorconfig.nvim" },
   { "j-hui/fidget.nvim", config = function() require "fidget".setup {} end },
   { "junegunn/vim-easy-align" },
-  { "liuchengxu/vista.vim" },
+  -- { "liuchengxu/vista.vim" },
   { "lunarvim/colorschemes" },
   { "m-demare/hlargs.nvim", config = function() require('hlargs').setup() end }, -- highlight arguments
   { "nathom/filetype.nvim" },
@@ -198,26 +200,26 @@ lvim.plugins = {
   { "stevearc/dressing.nvim" },
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
-  { "xiyaowong/nvim-transparent" },
+  -- { "xiyaowong/nvim-transparent" },
   { 'echasnovski/mini.nvim' },
   { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
-  {
-    "kevinhwang91/nvim-ufo",
-    run = ':TSUpdate',
-    event = { "BufReadPre" },
-    requires = "kevinhwang91/promise-async",
-    config = function()
-      -- https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
-      require("ufo").setup({
-        provider_selector = function(bufnr, filetype, buftype)
-          return { 'treesitter', 'indent' }
-        end
-      })
-      vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-      vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-    end,
-  },
+  -- {
+  --   "kevinhwang91/nvim-ufo",
+  --   run = ':TSUpdate',
+  --   event = { "BufReadPre" },
+  --   requires = "kevinhwang91/promise-async",
+  --   config = function()
+  --     -- https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
+  --     require("ufo").setup({
+  --       provider_selector = function(bufnr, filetype, buftype)
+  --         return { 'treesitter', 'indent' }
+  --       end
+  --     })
+  --     vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+  --     vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+  --   end,
+  -- },
   {
     "nvim-neotest/neotest",
     requires = { "MrcJkb/neotest-haskell", },
@@ -291,6 +293,14 @@ lvim.plugins = {
     end,
     ft = { "rust", "rs" },
   },
+}
+
+require "telescope".setup {
+  pickers = {
+    colorscheme = {
+      enable_preview = true
+    }
+  }
 }
 
 lvim.builtin.which_key.mappings["s"] = {
