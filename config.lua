@@ -175,6 +175,7 @@ vim.cmd([[
 
 -- Additional Plugins
 lvim.plugins = {
+  { 'Mofiqul/dracula.nvim' },
   -- { "David-Kunz/markid" },
   -- { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
@@ -200,7 +201,7 @@ lvim.plugins = {
   { "stevearc/dressing.nvim" },
   { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
-  -- { "xiyaowong/nvim-transparent" },
+  { "xiyaowong/nvim-transparent" },
   { 'echasnovski/mini.nvim' },
   { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
@@ -428,18 +429,18 @@ require 'nvim-treesitter.configs'.setup {
   markid = { enable = true }
 }
 
--- require("transparent").setup({
---   enable = true, -- boolean: enable transparent
---   extra_groups = { -- table/string: additional groups that should be cleared
---     -- In particular, when you set it to 'all', that means all available groups
+require("transparent").setup({
+  enable = true, -- boolean: enable transparent
+  extra_groups = { -- table/string: additional groups that should be cleared
+    -- In particular, when you set it to 'all', that means all available groups
 
---     -- example of akinsho/nvim-bufferline.lua
---     "NvimTreeNormal",
---     "NvimTreeBg",
---     "all",
---   },
---   exclude = {}, -- table: groups you don't want to clear
--- })
+    -- example of akinsho/nvim-bufferline.lua
+    "NvimTreeNormal",
+    "NvimTreeBg",
+    "all",
+  },
+  exclude = {}, -- table: groups you don't want to clear
+})
 
 
 require("symbols-outline").setup()
