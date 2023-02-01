@@ -5,7 +5,9 @@
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "darkplus"
+lvim.colorscheme = "noctis"
+-- lvim.colorscheme = "morning"
+-- lvim.colorscheme = "darkplus"
 -- lvim.colorscheme = "tokyonight-day"
 -- lvim.colorscheme = "tomorrow"
 -- lvim.colorscheme = "moonlight"
@@ -19,6 +21,7 @@ vim.g.italic_variables = true -- italic variables(Default: false)
 lvim.lsp.installer.setup.automatic_servers_installation = true
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "rust_analyzer" })
 
+lvim.builtin.dap.active = true
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 20
@@ -83,7 +86,7 @@ lvim.builtin.which_key.mappings["l?"] = { "<cmd>Lspsaga show_line_diagnostics<CR
 lvim.builtin.alpha.active = true
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.notify.active = true
+-- lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = true
@@ -130,6 +133,13 @@ vim.g.loaded_netrw = true -- or 1
 vim.g.loaded_netrwPlugin = true -- or 1
 lvim.builtin.treesitter.rainbow.enable = true
 
+lvim.builtin.telescope.defaults.layout_strategy = 'vertical'
+lvim.builtin.telescope.defaults.layout_config = {
+  width = 0.95, -- 0.90,
+  height = 0.95,
+  preview_height = 0.5,
+}
+
 vim.cmd([[
   let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
   let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
@@ -141,6 +151,7 @@ vim.cmd([[
   let g:ormolu_ghc_opt=["TypeApplications", "RankNTypes"]
   let g:neoformat_enabled_haskell = ['ormolu']
 
+  autocmd FileType Outline setlocal signcolumn=no 
 
   " delete should not cut data. <leader>d can be used the way d was used previously
   nnoremap x "_x
@@ -180,13 +191,12 @@ lvim.plugins = {
   -- { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   -- { "folke/lsp-colors.nvim", event = "BufRead" },
+  { 'kartikp10/noctis.nvim', requires = { 'rktjmp/lush.nvim' } },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
-  -- { "glacambre/firenvim", run = function() vim.fn['firenvim#install'](0) end },
   { "gpanders/editorconfig.nvim" },
   { "j-hui/fidget.nvim", config = function() require "fidget".setup {} end },
   { "junegunn/vim-easy-align" },
-  -- { "liuchengxu/vista.vim" },
   { "lunarvim/colorschemes" },
   { "m-demare/hlargs.nvim", config = function() require('hlargs').setup() end }, -- highlight arguments
   { "nathom/filetype.nvim" },
@@ -203,24 +213,24 @@ lvim.plugins = {
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
   { 'echasnovski/mini.nvim' },
+  { 'ray-x/guihua.lua' },
+  { 'ray-x/sad.nvim', config = function()
+    require 'sad'.setup({
+      diff = 'delta', -- you can use `diff`, `diff-so-fancy`
+      ls_file = 'fd', -- also git ls_file
+      exact = false, -- exact match
+      vsplit = true, -- split sad window the screen vertically, when set to number
+      -- it is a threadhold when window is larger than the threshold sad will split vertically,
+      height_ratio = 0.6, -- height ratio of sad window when split horizontally
+      width_ratio = 0.6, -- height ratio of sad window when split vertically
+
+    })
+  end },
+  { 'ldelossa/gh.nvim',
+    requires = { { 'ldelossa/litee.nvim' } }
+  },
   { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
-  -- {
-  --   "kevinhwang91/nvim-ufo",
-  --   run = ':TSUpdate',
-  --   event = { "BufReadPre" },
-  --   requires = "kevinhwang91/promise-async",
-  --   config = function()
-  --     -- https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
-  --     require("ufo").setup({
-  --       provider_selector = function(bufnr, filetype, buftype)
-  --         return { 'treesitter', 'indent' }
-  --       end
-  --     })
-  --     vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-  --     vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-  --   end,
-  -- },
   {
     "nvim-neotest/neotest",
     requires = { "MrcJkb/neotest-haskell", },
@@ -247,6 +257,11 @@ lvim.plugins = {
   {
     "simrat39/rust-tools.nvim",
     config = function()
+      -- Update this path
+      -- local extension_path = vim.env.HOME .. 'codelib/'
+      -- local codelldb_path = extension_path .. 'adapter/codelldb'
+      -- local liblldb_path = extension_path .. 'lldb/lib/liblldb.so'
+
       local status_ok, rust_tools = pcall(require, "rust-tools")
       if not status_ok then
         return
@@ -278,6 +293,47 @@ lvim.plugins = {
           -- cmd = { "ra-multiplex" },
           on_attach = require("lvim.lsp").common_on_attach,
           on_init = require("lvim.lsp").common_on_init,
+          cmd_env = {
+            CARGO_TARGET_DIR = '/home/tonyalaribe.parity/rust-analyzer'
+          },
+          settings = {
+            ["rust-analyzer"] = {
+              server = {
+                extraEnv = {
+                  -- Only used in VS Code
+                  CARGO_TARGET_DIR = '/home/tonyalaribe.parity/rust-analyzer'
+                },
+              },
+              assist = {
+                importEnforceGranularity = true,
+                importPrefix = "crate"
+              },
+              cargo = {
+                allFeatures = true
+              },
+              checkOnSave = {
+                enable = false,
+                extraArgs = { "--target-dir", "/home/tonyalaribe.parity/rust-analyzer" },
+                -- default: `cargo check`
+                command = "clippy"
+              },
+            },
+            inlayHints = {
+              lifetimeElisionHints = {
+                enable = true,
+                useParameterNames = true
+              },
+            },
+          }
+        },
+        -- debugging stuff
+        dap = {
+          adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path)
+          -- adapter = {
+          --   type = "executable",
+          --   command = "lldb-vscode",
+          --   name = "rt_lldb",
+          -- },
         },
       }
       -- WARNING: I did not try to get debugging working at all,
@@ -286,9 +342,13 @@ lvim.plugins = {
       -- local extension_path = vim.fn.expand "~/" .. ".vscode/extensions/vadimcn.vscode-lldb-1.7.3/"
       -- local codelldb_path = extension_path .. "adapter/codelldb"
       -- local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
-      -- opts.dap = {
-      --        adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
-      -- }
+      --
+      local extension_path = vim.env.HOME .. 'codelib/'
+      local codelldb_path = extension_path .. 'adapter/codelldb'
+      local liblldb_path = extension_path .. 'lldb/lib/liblldb.so'
+      opts.dap = {
+        adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+      }
       rust_tools.setup(opts)
       rust_tools.inlay_hints.enable()
     end,
@@ -351,6 +411,7 @@ lvim.builtin.which_key.mappings["l"] = {
     "Workspace Symbols",
   },
   e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
+  p = { "<cmd>Lspsaga preview_definition<cr>", "Preview Definition" }
 }
 
 lvim.builtin.which_key.mappings["lt"] = {
@@ -366,7 +427,7 @@ lvim.builtin.which_key.mappings["lt"] = {
 lvim.builtin.which_key.mappings["i"] = {
   name = "Saga",
   r = { "<cmd>lua require'lspsaga.rename'.rename()<CR>", "Rename" },
-  i = { "<cmd>lua require'lspsaga.hover'.render_hover_doc()<CR>", "Hover Doc" },
+  K = { "<cmd>lua require'lspsaga.hover'.render_hover_doc()<CR>", "Hover Doc" },
   f = { "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", "Find Via LSP" },
   a = { "<cmd>lua require('lspsaga.codeaction').code_action()<CR>", "Code action" },
   k = { "<cmd>lua require'lspsaga.provider'.preview_definition()<CR>", "Preview Definition" },
@@ -383,18 +444,51 @@ lvim.builtin.which_key.mappings["r"] = {
   hD = { "<cmd>RustUnsetInlayHints<cr>", "Disable Inlay Hints All buffs" },
   ha = { "<cmd>RustHoverActions<cr>", "Hover Actions" },
 }
-
-lvim.builtin.which_key.mappings["h"] = {
-  name = "Harpoon",
-  a = { '<cmd>lua require("harpoon.mark").add_file()<cr>', "mark file" },
-  m = { '<cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>', "menu" },
+lvim.builtin.which_key.mappings["gh"] = {
+  name = "+Github",
+  c = {
+    name = "+Commits",
+    c = { "<cmd>GHCloseCommit<cr>", "Close" },
+    e = { "<cmd>GHExpandCommit<cr>", "Expand" },
+    o = { "<cmd>GHOpenToCommit<cr>", "Open To" },
+    p = { "<cmd>GHPopOutCommit<cr>", "Pop Out" },
+    z = { "<cmd>GHCollapseCommit<cr>", "Collapse" },
+  },
+  i = {
+    name = "+Issues",
+    p = { "<cmd>GHPreviewIssue<cr>", "Preview" },
+  },
+  l = {
+    name = "+Litee",
+    t = { "<cmd>LTPanel<cr>", "Toggle Panel" },
+  },
+  r = {
+    name = "+Review",
+    b = { "<cmd>GHStartReview<cr>", "Begin" },
+    c = { "<cmd>GHCloseReview<cr>", "Close" },
+    d = { "<cmd>GHDeleteReview<cr>", "Delete" },
+    e = { "<cmd>GHExpandReview<cr>", "Expand" },
+    s = { "<cmd>GHSubmitReview<cr>", "Submit" },
+    z = { "<cmd>GHCollapseReview<cr>", "Collapse" },
+  },
+  p = {
+    name = "+Pull Request",
+    c = { "<cmd>GHClosePR<cr>", "Close" },
+    d = { "<cmd>GHPRDetails<cr>", "Details" },
+    e = { "<cmd>GHExpandPR<cr>", "Expand" },
+    o = { "<cmd>GHOpenPR<cr>", "Open" },
+    p = { "<cmd>GHPopOutPR<cr>", "PopOut" },
+    r = { "<cmd>GHRefreshPR<cr>", "Refresh" },
+    t = { "<cmd>GHOpenToPR<cr>", "Open To" },
+    z = { "<cmd>GHCollapsePR<cr>", "Collapse" },
+  },
+  t = {
+    name = "+Threads",
+    c = { "<cmd>GHCreateThread<cr>", "Create" },
+    n = { "<cmd>GHNextThread<cr>", "Next" },
+    t = { "<cmd>GHToggleThread<cr>", "Toggle" },
+  },
 }
-lvim.builtin.which_key.mappings["h1"] = { '<cmd>lua require("harpoon.ui").nav_file(1)<cr>', "open 1" }
-lvim.builtin.which_key.mappings["h2"] = { '<cmd>lua require("harpoon.ui").nav_file(2)<cr>', "open 2" }
-lvim.builtin.which_key.mappings["h3"] = { '<cmd>lua require("harpoon.ui").nav_file(3)<cr>', "open 3" }
-lvim.builtin.which_key.mappings["h]"] = { '<cmd>lua require("harpoon.ui").nav_next()<cr>', "Nav next" }
-lvim.builtin.which_key.mappings["h["] = { '<cmd>lua require("harpoon.ui").nav_prev()<cr>', "Nav prev" }
-
 
 -- local saga = require("lspsaga")
 -- saga.init_lsp_saga()
@@ -429,18 +523,18 @@ require 'nvim-treesitter.configs'.setup {
   markid = { enable = true }
 }
 
-require("transparent").setup({
-  enable = true, -- boolean: enable transparent
-  extra_groups = { -- table/string: additional groups that should be cleared
-    -- In particular, when you set it to 'all', that means all available groups
+-- require("transparent").setup({
+--   enable = true, -- boolean: enable transparent
+--   extra_groups = { -- table/string: additional groups that should be cleared
+--     -- In particular, when you set it to 'all', that means all available groups
 
-    -- example of akinsho/nvim-bufferline.lua
-    "NvimTreeNormal",
-    "NvimTreeBg",
-    "all",
-  },
-  exclude = {}, -- table: groups you don't want to clear
-})
+--     -- example of akinsho/nvim-bufferline.lua
+--     "NvimTreeNormal",
+--     "NvimTreeBg",
+--     "all",
+--   },
+--   exclude = {}, -- table: groups you don't want to clear
+-- })
 
 
 require("symbols-outline").setup()
@@ -467,3 +561,49 @@ end
 lspconfig.doctests.setup {}
 
 require('mini.ai').setup()
+
+
+require('litee.lib').setup()
+require('litee.gh').setup({
+  -- deprecated, around for compatability for now.
+  jump_mode             = "invoking",
+  -- remap the arrow keys to resize any litee.nvim windows.
+  map_resize_keys       = false,
+  -- do not map any keys inside any gh.nvim buffers.
+  disable_keymaps       = false,
+  -- the icon set to use.
+  icon_set              = "default",
+  -- any custom icons to use.
+  icon_set_custom       = nil,
+  -- whether to register the @username and #issue_number omnifunc completion
+  -- in buffers which start with .git/
+  git_buffer_completion = true,
+  -- defines keymaps in gh.nvim buffers.
+  keymaps               = {
+    -- when inside a gh.nvim panel, this key will open a node if it has
+    -- any futher functionality. for example, hitting <CR> on a commit node
+    -- will open the commit's changed files in a new gh.nvim panel.
+    open = "<CR>",
+    -- when inside a gh.nvim panel, expand a collapsed node
+    expand = "zo",
+    -- when inside a gh.nvim panel, collpased and expanded node
+    collapse = "zc",
+    -- when cursor is over a "#1234" formatted issue or PR, open its details
+    -- and comments in a new tab.
+    goto_issue = "gd",
+    -- show any details about a node, typically, this reveals commit messages
+    -- and submitted review bodys.
+    details = "d",
+    -- inside a convo buffer, submit a comment
+    submit_comment = "<C-s>",
+    -- inside a convo buffer, when your cursor is ontop of a comment, open
+    -- up a set of actions that can be performed.
+    actions = "<C-a>",
+    -- inside a thread convo buffer, resolve the thread.
+    resolve_thread = "<C-r>",
+    -- inside a gh.nvim panel, if possible, open the node's web URL in your
+    -- browser. useful particularily for digging into external failed CI
+    -- checks.
+    goto_web = "gx"
+  }
+})
