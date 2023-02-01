@@ -8,6 +8,8 @@ lvim.format_on_save = true
 lvim.colorscheme = "noctis"
 -- lvim.colorscheme = "morning"
 -- lvim.colorscheme = "darkplus"
+-- lvim.colorscheme = "dawnfox"
+-- lvim.colorscheme = "darkplus"
 -- lvim.colorscheme = "tokyonight-day"
 -- lvim.colorscheme = "tomorrow"
 -- lvim.colorscheme = "moonlight"
@@ -187,6 +189,7 @@ vim.cmd([[
 -- Additional Plugins
 lvim.plugins = {
   { 'Mofiqul/dracula.nvim' },
+  { 'EdenEast/nightfox.nvim' },
   -- { "David-Kunz/markid" },
   -- { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
@@ -202,6 +205,15 @@ lvim.plugins = {
   { "nathom/filetype.nvim" },
   { "ndmitchell/ghcid", rtp = "plugins/nvim" },
   { "neovimhaskell/haskell-vim" },
+  {
+    'MrcJkb/haskell-tools.nvim',
+    requires = {
+      'neovim/nvim-lspconfig',
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim', -- optional
+    },
+    -- tag = 'x.y.z' -- [^1]
+  },
   { "p00f/nvim-ts-rainbow" },
   { "ray-x/lsp_signature.nvim", event = "BufRead", config = function() require("lsp_signature").setup() end },
   { "romgrk/nvim-treesitter-context" },
@@ -499,6 +511,15 @@ vim.cmd([[
   nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
   nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
 ]])
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  {
+    command = "fourmolu",
+    args = { "-i" },
+    filetypes = { "haskell", "hs" },
+  },
+}
 
 
 lvim.builtin.which_key.mappings["z"] = {
