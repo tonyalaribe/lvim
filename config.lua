@@ -19,7 +19,8 @@ vim.g.italic_keywords = true -- italic keywords(Default: true)
 vim.g.italic_functions = true -- italic functions(Default: false)
 vim.g.italic_variables = true -- italic variables(Default: false)
 lvim.lsp.installer.setup.automatic_servers_installation = true
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "taplo", "rust_analyzer" })
+local skipped_servers = { "taplo", "rust_analyzer" }
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, skipped_servers)
 
 lvim.builtin.dap.active = true
 vim.opt.foldmethod = "expr"
@@ -236,6 +237,17 @@ lvim.plugins = {
     requires = { "MrcJkb/neotest-haskell", },
     config = function()
       require("neotest").setup({ adapters = { require("neotest-haskell"), } })
+    end
+  },
+  {
+    'pwntester/octo.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'kyazdani42/nvim-web-devicons',
+    },
+    config = function()
+      require "octo".setup()
     end
   },
   { "ekickx/clipboard-image.nvim", config = function()
