@@ -28,6 +28,9 @@ lvim.builtin.dap.active = true
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 20
+vim.opt.spell = true
+vim.opt.spelllang = "en_us"
+
 -- for nvim-ufo based folding
 -- vim.o.foldcolumn = "1"
 -- vim.o.foldlevel = 99
@@ -140,7 +143,7 @@ lvim.builtin.telescope.defaults.layout_strategy = 'vertical'
 lvim.builtin.telescope.defaults.layout_config = {
   width = 0.95, -- 0.90,
   height = 0.95,
-  preview_height = 0.5,
+  -- preview_height = 0.5,
 }
 
 vim.cmd([[
@@ -195,7 +198,7 @@ lvim.plugins = {
   -- { "christoomey/vim-tmux-navigator" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
   -- { "folke/lsp-colors.nvim", event = "BufRead" },
-  { 'kartikp10/noctis.nvim', requires = { 'rktjmp/lush.nvim' } },
+  { 'kartikp10/noctis.nvim', dependencies = { 'rktjmp/lush.nvim' } },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
   { "folke/trouble.nvim", cmd = "TroubleToggle" },
   { "gpanders/editorconfig.nvim" },
@@ -206,9 +209,12 @@ lvim.plugins = {
   { "nathom/filetype.nvim" },
   { "ndmitchell/ghcid", rtp = "plugins/nvim" },
   { "neovimhaskell/haskell-vim" },
+  { "tpope/vim-repeat" },
+  { "ggandor/leap.nvim", config = function() require('leap').add_default_mappings() end },
+  { 'nacro90/numb.nvim', config = function() require "numb".setup {} end },
   {
     'MrcJkb/haskell-tools.nvim',
-    requires = {
+    dependencies = {
       'neovim/nvim-lspconfig',
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim', -- optional
@@ -240,43 +246,26 @@ lvim.plugins = {
     })
   end },
   { 'ldelossa/gh.nvim',
-    requires = { { 'ldelossa/litee.nvim' } }
+    dependencies = { { 'ldelossa/litee.nvim' } }
   },
   { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
   {
     "nvim-neotest/neotest",
-    requires = { "MrcJkb/neotest-haskell", },
+    dependencies = { "MrcJkb/neotest-haskell", },
     config = function()
       require("neotest").setup({ adapters = { require("neotest-haskell"), } })
     end
   },
   {
     'pwntester/octo.nvim',
-    requires = {
+    dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope.nvim',
-      'kyazdani42/nvim-web-devicons',
     },
     config = function()
       require "octo".setup()
     end
-  },
-  { "ekickx/clipboard-image.nvim", config = function()
-    require 'clipboard-image'.setup {
-      default = {
-        img_name = function()
-          vim.fn.inputsave()
-          local name = vim.fn.input('Name: ')
-          vim.fn.inputrestore()
-          if name == nil or name == '' then
-            return os.date('%y-%m-%d-%H-%M-%S')
-          end
-          return name
-        end,
-      }
-    }
-  end
   },
   {
     "simrat39/rust-tools.nvim",
@@ -318,14 +307,14 @@ lvim.plugins = {
           on_attach = require("lvim.lsp").common_on_attach,
           on_init = require("lvim.lsp").common_on_init,
           cmd_env = {
-            CARGO_TARGET_DIR = '/home/tonyalaribe.parity/rust-analyzer'
+            CARGO_TARGET_DIR = '/Users/tonyalaribe.parity/rust-analyzer'
           },
           settings = {
             ["rust-analyzer"] = {
               server = {
                 extraEnv = {
                   -- Only used in VS Code
-                  CARGO_TARGET_DIR = '/home/tonyalaribe.parity/rust-analyzer'
+                  CARGO_TARGET_DIR = '/Users/tonyalaribe.parity/rust-analyzer'
                 },
               },
               assist = {
@@ -333,14 +322,30 @@ lvim.plugins = {
                 importPrefix = "crate"
               },
               cargo = {
-                allFeatures = true
+                allFeatures = true,
+                buildScripts = {
+                  enable = true,
+                },
               },
               checkOnSave = {
                 enable = false,
-                extraArgs = { "--target-dir", "/home/tonyalaribe.parity/rust-analyzer" },
+                extraArgs = { "--target-dir", "/Users/tonyalaribe.parity/rust-analyzer" },
                 -- default: `cargo check`
                 command = "clippy"
               },
+              diagnostics = {
+                disable = { "unresolved-proc-macro" }
+              },
+              rustfmt = {
+                extraArgs = { "+nightly", },
+              },
+              procMacro = {
+                enable = true,
+                attributes = {
+                  enable = true
+                }
+                -- server = ""
+              }
             },
             inlayHints = {
               lifetimeElisionHints = {
@@ -409,45 +414,6 @@ lvim.builtin.which_key.mappings["s"] = {
   },
 }
 
-lvim.builtin.which_key.mappings["l"] = {
-  name = "LSP",
-  a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-  A = { "<cmd>Lspsaga code_action<CR>", "Code Action saga" },
-  d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
-  w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
-  f = { require("lvim.lsp.utils").format, "Format" },
-  i = { "<cmd>LspInfo<cr>", "Info" },
-  I = { "<cmd>Mason<cr>", "Mason Info" },
-  j = {
-    vim.diagnostic.goto_next,
-    "Next Diagnostic",
-  },
-  k = {
-    vim.diagnostic.goto_prev,
-    "Prev Diagnostic",
-  },
-  l = { vim.lsp.codelens.run, "CodeLens Action" },
-  q = { vim.diagnostic.setloclist, "Quickfix" },
-  r = { vim.lsp.buf.rename, "Rename" },
-  s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-  S = {
-    "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-    "Workspace Symbols",
-  },
-  e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
-  p = { "<cmd>Lspsaga preview_definition<cr>", "Preview Definition" }
-}
-
-lvim.builtin.which_key.mappings["lt"] = {
-  name = "Trouble",
-  r = { "<cmd>Trouble lsp_references<cr>", "References" },
-  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
-  d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnosticss" },
-  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
-  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
-  w = { "<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnosticss" },
-}
-
 lvim.builtin.which_key.mappings["i"] = {
   name = "Saga",
   r = { "<cmd>lua require'lspsaga.rename'.rename()<CR>", "Rename" },
@@ -462,11 +428,19 @@ lvim.builtin.which_key.mappings["r"] = {
   name = "Rust",
   m = { "<cmd>RustExpandMacro<cr>", "Expand Macro" },
   r = { "<cmd>RustRunnables<cr>", "Runnables" },
+  rr = { "<cmd>RustLastRun<cr>", "Last Run" },
   he = { "<cmd>RustEnableInlayHints<cr>", "Enable Inlay Hints" },
   hd = { "<cmd>RustDisableInlayHints<cr>", "Disable Inlay Hints" },
   hE = { "<cmd>RustSetInlayHints<cr>", "Enable Inlay Hints All buffs" },
   hD = { "<cmd>RustUnsetInlayHints<cr>", "Disable Inlay Hints All buffs" },
-  ha = { "<cmd>RustHoverActions<cr>", "Hover Actions" },
+  K = { "<cmd>RustHoverActions<cr>", "Hover Actions" },
+  Kr = { "<cmd>RustHoverRange<cr>", "Hover Range" },
+  a = { "<cmd>RustCodeAction<cr>", "Rust Code Actions" },
+  f = { "<cmd>RustFmt<cr>", "Rust Fmt" },
+  fr = { "<cmd>RustFmtRange<cr>", "Rust Fmt Range" },
+  d = { "<cmd>RustDebuggables<cr>", "Rust Debuggables" },
+
+
 }
 lvim.builtin.which_key.mappings["gh"] = {
   name = "+Github",
