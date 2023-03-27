@@ -1,143 +1,45 @@
 --[[
+ THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+ `lvim` is the global options object
 ]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT https://google.com
+
+-- vim options
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.relativenumber = true
 
 -- general
-lvim.log.level = "warn"
-lvim.format_on_save = true
-lvim.colorscheme = "noctis"
--- lvim.colorscheme = "morning"
--- lvim.colorscheme = "darkplus"
--- lvim.colorscheme = "dawnfox"
--- lvim.colorscheme = "darkplus"
--- lvim.colorscheme = "tokyonight-day"
--- lvim.colorscheme = "tomorrow"
--- lvim.colorscheme = "moonlight"
--- lvim.colorscheme = "onedarker"
+lvim.log.level = "info"
+lvim.format_on_save = {
+  enabled = true,
+  pattern = "*.lua",
+  timeout = 1000,
+}
 
--- vim.g.transparent_background = true        -- transparent background(Default: false)
-vim.g.italic_comments = true -- italic comments(Default: true)
-vim.g.italic_keywords = true -- italic keywords(Default: true)
-vim.g.italic_functions = true -- italic functions(Default: false)
-vim.g.italic_variables = true -- italic variables(Default: false)
-lvim.lsp.installer.setup.automatic_servers_installation = true
-local skipped_servers = { "taplo", "rust_analyzer" }
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, skipped_servers)
-
-lvim.builtin.dap.active = true
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.foldlevel = 20
-vim.opt.spell = true
-vim.opt.spelllang = "en_us"
-
--- for nvim-ufo based folding
--- vim.o.foldcolumn = "1"
--- vim.o.foldlevel = 99
--- vim.o.foldlevelstart = 99
--- vim.o.foldenable = true
-
-
--- vim.o.ch = 0
-
-
-
--- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+
+lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+
+-- Use which-key to add extra bindings with the leader-key prefix
+lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
+-- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 lvim.keys.normal_mode["gt"] = ":pop<cr>"
 lvim.keys.normal_mode["K"] = ":lua require'lspsaga.hover'.render_hover_doc()<CR>"
 
-require('telescope').load_extension('projects')
+-- Change theme settings
+lvim.colorscheme = "noctis"
 
--- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
--- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
-local _, actions = pcall(require, "telescope.actions")
-lvim.builtin.telescope.defaults.mappings = {
-  -- for input mode
-  i = {
-    ["<C-j>"] = actions.move_selection_next,
-    ["<C-k>"] = actions.move_selection_previous,
-    ["<C-n>"] = actions.cycle_history_next,
-    ["<C-p>"] = actions.cycle_history_prev,
-  },
-  -- for normal mode
-  n = {
-    ["<C-j>"] = actions.move_selection_next,
-    ["<C-k>"] = actions.move_selection_previous,
-  },
-}
-
--- Use which-key to add extra bindings with the leader-key prefix
-lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
-lvim.builtin.which_key.mappings["t"] = {
-  name = "+Trouble",
-  r = { "<cmd>Trouble lsp_references<cr>", "References" },
-  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
-  d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
-  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
-  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
-  w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
-}
-
-lvim.builtin.which_key.mappings["ss"] = { "<cmd>lua require('spectre').open()<CR>", "Open Search" }
-lvim.builtin.which_key.mappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<CR>",
-  "Search word" }
-lvim.builtin.which_key.vmappings["sw"] = { "<cmd>lua require('spectre').open_visual({select_word=true})<CR>",
-  "Search word" }
-
-lvim.builtin.which_key.mappings["l?"] = { "<cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostics" }
-
--- TODO: User Config for predefined plugins
 lvim.builtin.alpha.active = true
--- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.mode = "dashboard"
--- lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.renderer.icons.show.git = true
-
--- require("nvim-treesitter.install").compilers = { "gcc-11" }
--- lvim.builtin.treesitter.compilers = { "gcc-11" }
-
--- if you don't want all the parsers change this to a table of the ones you want
-lvim.builtin.treesitter.ensure_installed = {
-  "bash",
-  "c",
-  "javascript",
-  "json",
-  "lua",
-  "python",
-  "typescript",
-  "tsx",
-  "css",
-  "rust",
-  "yaml",
-  "go",
-  "haskell",
-}
-
--- lvim.builtin.treesitter.ignore_install = { "haskell" }
-lvim.builtin.treesitter.highlight.enabled = true
-
--- Autocommands (https://neovim.io/doc/user/autocmd.html)
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = { "*.json", "*.jsonc" },
-  -- enable wrap mode for json files only
-  command = "setlocal wrap",
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "zsh",
-  callback = function()
-    -- let treesitter use bash highlight for zsh files as well
-    require("nvim-treesitter.highlight").attach(0, "bash")
-  end,
-})
-lvim.builtin.nvimtree.setup.disable_netrw = true
-lvim.builtin.nvimtree.setup.hijack_netrw = true
-vim.g.loaded_netrw = true -- or 1
-vim.g.loaded_netrwPlugin = true -- or 1
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = true 
 lvim.builtin.treesitter.rainbow.enable = true
+
+-- Automatically install missing parsers when entering buffer
+lvim.builtin.treesitter.auto_install = true
 
 lvim.builtin.telescope.defaults.layout_strategy = 'vertical'
 lvim.builtin.telescope.defaults.layout_config = {
@@ -146,65 +48,109 @@ lvim.builtin.telescope.defaults.layout_config = {
   -- preview_height = 0.5,
 }
 
+
+lvim.builtin.dap.active = true
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 20
+vim.opt.spell = true
+vim.opt.spelllang = "en_us"
+vim.g.italic_comments = true -- italic comments(Default: true)
+vim.g.italic_keywords = true -- italic keywords(Default: true)
+vim.g.italic_functions = true -- italic functions(Default: false)
+vim.g.italic_variables = true -- italic variables(Default: false)
+vim.g.haskell_enable_quantification = true
+vim.g.haskell_enable_recursivedo = true 
+vim.g.haskell_enable_arrowsyntax = true 
+vim.g.haskell_enable_pattern_synonyms = true
+vim.g.haskell_enable_static_pointers = true 
+vim.g.neoformat_enabled_haskell = {'fourmolu'}
+
+
+
 vim.cmd([[
-  let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
-  let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
-  let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
-  let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
-  let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
-  let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
-  let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
-  let g:ormolu_ghc_opt=["TypeApplications", "RankNTypes"]
-  let g:neoformat_enabled_haskell = ['ormolu']
-
   autocmd FileType Outline setlocal signcolumn=no 
-
   " delete should not cut data. <leader>d can be used the way d was used previously
   nnoremap x "_x
   nnoremap d "_d
-
   " nnoremap D "_D
   vnoremap d "_d
-
   " Vmap for maintain Visual Mode after shifting > and <
   vmap < <gv
   vmap > >gv
-
   nmap <silent> <F3> :NvimTreeToggle<CR>
   nmap <silent> <F4> :SymbolsOutline<CR>
   "nmap <silent> <F4> :LSoutlineToggle<CR>
-
   " automatically rebalance windows on vim resize
   autocmd VimResized * :wincmd =
-
   " zoom a vim pane, <C-w>= to re-balance
   nnoremap <leader>- :wincmd _<cr>:wincmd \|<cr>
   nnoremap <leader>= :wincmd =<cr>
-
   " Start interactive EasyAlign in visual mode (e.g. vipga)
   xmap ga <Plug>(EasyAlign)
   " Start interactive EasyAlign for a motion/text object (e.g. gaip)
   nmap ga <Plug>(EasyAlign)
-
-  " vim.g.nvim_tree_disable_netrw = 0
 ]])
 
+-- lvim.builtin.treesitter.ignore_install = { "haskell" }
 
--- Additional Plugins
+-- always installed on startup, useful for parsers without a strict filetype
+lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "regex" }
+
+-- -- generic LSP settings <https://www.lunarvim.org/docs/languages#lsp-support>
+
+-- --- disable automatic installation of servers
+-- lvim.lsp.installer.setup.automatic_installation = false
+
+---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
+---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "rust_analyzer" })
+-- local opts = {} -- check the lspconfig documentation for a list of all possible options
+-- require("lvim.lsp.manager").setup("pyright", opts)
+
+-- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. IMPORTANT: Requires `:LvimCacheReset` to take effect
+-- ---`:LvimInfo` lists which server(s) are skipped for the current filetype
+-- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+--   return server ~= "emmet_ls"
+-- end, lvim.lsp.automatic_configuration.skipped_servers)
+
+-- -- you can set a custom on_attach function that will be used for all the language servers
+-- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
+-- lvim.lsp.on_attach_callback = function(client, bufnr)
+--   local function buf_set_option(...)
+--     vim.api.nvim_buf_set_option(bufnr, ...)
+--   end
+--   --Enable completion triggered by <c-x><c-o>
+--   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
+-- end
+
+-- linters and formatters <https://www.lunarvim.org/docs/languages#lintingformatting>
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "stylua" },
+  {
+    command = "prettier",
+    extra_args = { "--print-width", "100" },
+    filetypes = { "typescript", "typescriptreact" },
+  },
+}
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { command = "flake8", filetypes = { "python" } },
+  {
+    command = "shellcheck",
+    args = { "--severity", "warning" },
+  },
+}
+
 lvim.plugins = {
-  { 'Mofiqul/dracula.nvim' },
-  { 'EdenEast/nightfox.nvim' },
-  -- { "David-Kunz/markid" },
-  -- { "christoomey/vim-tmux-navigator" },
+  { "folke/trouble.nvim", cmd = "TroubleToggle" },
   { "dinhhuy258/git.nvim", config = function() require('git').setup() end },
-  -- { "folke/lsp-colors.nvim", event = "BufRead" },
   { 'kartikp10/noctis.nvim', dependencies = { 'rktjmp/lush.nvim' } },
   { "folke/todo-comments.nvim", config = function() require("todo-comments").setup {} end },
-  { "folke/trouble.nvim", cmd = "TroubleToggle" },
   { "gpanders/editorconfig.nvim" },
   { "j-hui/fidget.nvim", config = function() require "fidget".setup {} end },
   { "junegunn/vim-easy-align" },
-  { "lunarvim/colorschemes" },
   { "m-demare/hlargs.nvim", config = function() require('hlargs').setup() end }, -- highlight arguments
   { "nathom/filetype.nvim" },
   { "ndmitchell/ghcid", rtp = "plugins/nvim" },
@@ -212,26 +158,28 @@ lvim.plugins = {
   { "tpope/vim-repeat" },
   { "ggandor/leap.nvim", config = function() require('leap').add_default_mappings() end },
   { 'nacro90/numb.nvim', config = function() require "numb".setup {} end },
-  {
-    'MrcJkb/haskell-tools.nvim',
-    dependencies = {
-      'neovim/nvim-lspconfig',
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope.nvim', -- optional
-    },
-    -- tag = 'x.y.z' -- [^1]
-  },
+  { 'MrcJkb/haskell-tools.nvim' },
   { "p00f/nvim-ts-rainbow" },
-  { "ray-x/lsp_signature.nvim", event = "BufRead", config = function() require("lsp_signature").setup() end },
+  { "ray-x/lsp_signature.nvim", config = function() require "lsp_signature".setup {} end},
   { "romgrk/nvim-treesitter-context" },
   { "sbdchd/neoformat" },
   { "simrat39/symbols-outline.nvim", config = function() require('symbols-outline').setup() end },
   { "sindrets/diffview.nvim", event = "BufRead" },
   { "stevearc/dressing.nvim" },
-  { "tami5/lspsaga.nvim" },
   { "wakatime/vim-wakatime" },
   { "xiyaowong/nvim-transparent" },
-  { 'echasnovski/mini.nvim' },
+  {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    config = function()
+        require("lspsaga").setup({})
+    end,
+    dependencies = {
+      {"nvim-tree/nvim-web-devicons"},
+      --Please make sure you install markdown and markdown_inline parser
+      {"nvim-treesitter/nvim-treesitter"}
+    }
+  },
   { 'ray-x/guihua.lua' },
   { 'ray-x/sad.nvim', config = function()
     require 'sad'.setup({
@@ -245,26 +193,12 @@ lvim.plugins = {
 
     })
   end },
-  { 'ldelossa/gh.nvim',
-    dependencies = { { 'ldelossa/litee.nvim' } }
-  },
-  { 'nvim-pack/nvim-spectre' },
   { 'chentoast/marks.nvim', config = function() require 'marks'.setup {} end },
   {
     "nvim-neotest/neotest",
     dependencies = { "MrcJkb/neotest-haskell", },
     config = function()
       require("neotest").setup({ adapters = { require("neotest-haskell"), } })
-    end
-  },
-  {
-    'pwntester/octo.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope.nvim',
-    },
-    config = function()
-      require "octo".setup()
     end
   },
   {
@@ -385,35 +319,6 @@ lvim.plugins = {
   },
 }
 
-require "telescope".setup {
-  pickers = {
-    colorscheme = {
-      enable_preview = true
-    }
-  }
-}
-
-lvim.builtin.which_key.mappings["s"] = {
-  name = "Search",
-  b = { "<cmd>Telescope buffers<cr>", "Buffers" },
-  B = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-  c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
-  f = { "<cmd>Telescope find_files<cr>", "Find File" },
-  h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
-  H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
-  m = { "<cmd>Telescope marks<cr>", "Man Pages" },
-  M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
-  r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-  R = { "<cmd>Telescope registers<cr>", "Registers" },
-  t = { "<cmd>Telescope live_grep<cr>", "Text" },
-  k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
-  C = { "<cmd>Telescope commands<cr>", "Commands" },
-  p = {
-    "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
-    "Colorscheme with Preview",
-  },
-}
-
 lvim.builtin.which_key.mappings["i"] = {
   name = "Saga",
   r = { "<cmd>lua require'lspsaga.rename'.rename()<CR>", "Rename" },
@@ -442,61 +347,15 @@ lvim.builtin.which_key.mappings["r"] = {
 
 
 }
-lvim.builtin.which_key.mappings["gh"] = {
-  name = "+Github",
-  c = {
-    name = "+Commits",
-    c = { "<cmd>GHCloseCommit<cr>", "Close" },
-    e = { "<cmd>GHExpandCommit<cr>", "Expand" },
-    o = { "<cmd>GHOpenToCommit<cr>", "Open To" },
-    p = { "<cmd>GHPopOutCommit<cr>", "Pop Out" },
-    z = { "<cmd>GHCollapseCommit<cr>", "Collapse" },
-  },
-  i = {
-    name = "+Issues",
-    p = { "<cmd>GHPreviewIssue<cr>", "Preview" },
-  },
-  l = {
-    name = "+Litee",
-    t = { "<cmd>LTPanel<cr>", "Toggle Panel" },
-  },
-  r = {
-    name = "+Review",
-    b = { "<cmd>GHStartReview<cr>", "Begin" },
-    c = { "<cmd>GHCloseReview<cr>", "Close" },
-    d = { "<cmd>GHDeleteReview<cr>", "Delete" },
-    e = { "<cmd>GHExpandReview<cr>", "Expand" },
-    s = { "<cmd>GHSubmitReview<cr>", "Submit" },
-    z = { "<cmd>GHCollapseReview<cr>", "Collapse" },
-  },
-  p = {
-    name = "+Pull Request",
-    c = { "<cmd>GHClosePR<cr>", "Close" },
-    d = { "<cmd>GHPRDetails<cr>", "Details" },
-    e = { "<cmd>GHExpandPR<cr>", "Expand" },
-    o = { "<cmd>GHOpenPR<cr>", "Open" },
-    p = { "<cmd>GHPopOutPR<cr>", "PopOut" },
-    r = { "<cmd>GHRefreshPR<cr>", "Refresh" },
-    t = { "<cmd>GHOpenToPR<cr>", "Open To" },
-    z = { "<cmd>GHCollapsePR<cr>", "Collapse" },
-  },
-  t = {
-    name = "+Threads",
-    c = { "<cmd>GHCreateThread<cr>", "Create" },
-    n = { "<cmd>GHNextThread<cr>", "Next" },
-    t = { "<cmd>GHToggleThread<cr>", "Toggle" },
-  },
-}
 
--- local saga = require("lspsaga")
--- saga.init_lsp_saga()
-
-
-vim.cmd([[
-  " jump diagnostic
-  nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
-  nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
-]])
+-- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "zsh",
+  callback = function()
+    -- let treesitter use bash highlight for zsh files as well
+    require("nvim-treesitter.highlight").attach(0, "bash")
+  end,
+})
 
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
@@ -505,11 +364,6 @@ formatters.setup {
     args = { "-i" },
     filetypes = { "haskell", "hs" },
   },
-}
-
-
-lvim.builtin.which_key.mappings["z"] = {
-  z = { '<cmd>lua require("stylua-nvim").format_file()<CR>', "Format Lua" },
 }
 
 require('lspconfig').tailwindcss.setup({
@@ -529,22 +383,6 @@ require('lspconfig').tailwindcss.setup({
 require 'nvim-treesitter.configs'.setup {
   markid = { enable = true }
 }
-
--- require("transparent").setup({
---   enable = true, -- boolean: enable transparent
---   extra_groups = { -- table/string: additional groups that should be cleared
---     -- In particular, when you set it to 'all', that means all available groups
-
---     -- example of akinsho/nvim-bufferline.lua
---     "NvimTreeNormal",
---     "NvimTreeBg",
---     "all",
---   },
---   exclude = {}, -- table: groups you don't want to clear
--- })
-
-
-require("symbols-outline").setup()
 
 local lspconfig = require 'lspconfig'
 local configs = require 'lspconfig.configs'
@@ -566,51 +404,3 @@ if not configs.doctests then
 end
 
 lspconfig.doctests.setup {}
-
-require('mini.ai').setup()
-
-
-require('litee.lib').setup()
-require('litee.gh').setup({
-  -- deprecated, around for compatability for now.
-  jump_mode             = "invoking",
-  -- remap the arrow keys to resize any litee.nvim windows.
-  map_resize_keys       = false,
-  -- do not map any keys inside any gh.nvim buffers.
-  disable_keymaps       = false,
-  -- the icon set to use.
-  icon_set              = "default",
-  -- any custom icons to use.
-  icon_set_custom       = nil,
-  -- whether to register the @username and #issue_number omnifunc completion
-  -- in buffers which start with .git/
-  git_buffer_completion = true,
-  -- defines keymaps in gh.nvim buffers.
-  keymaps               = {
-    -- when inside a gh.nvim panel, this key will open a node if it has
-    -- any futher functionality. for example, hitting <CR> on a commit node
-    -- will open the commit's changed files in a new gh.nvim panel.
-    open = "<CR>",
-    -- when inside a gh.nvim panel, expand a collapsed node
-    expand = "zo",
-    -- when inside a gh.nvim panel, collpased and expanded node
-    collapse = "zc",
-    -- when cursor is over a "#1234" formatted issue or PR, open its details
-    -- and comments in a new tab.
-    goto_issue = "gd",
-    -- show any details about a node, typically, this reveals commit messages
-    -- and submitted review bodys.
-    details = "d",
-    -- inside a convo buffer, submit a comment
-    submit_comment = "<C-s>",
-    -- inside a convo buffer, when your cursor is ontop of a comment, open
-    -- up a set of actions that can be performed.
-    actions = "<C-a>",
-    -- inside a thread convo buffer, resolve the thread.
-    resolve_thread = "<C-r>",
-    -- inside a gh.nvim panel, if possible, open the node's web URL in your
-    -- browser. useful particularily for digging into external failed CI
-    -- checks.
-    goto_web = "gx"
-  }
-})
