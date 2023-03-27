@@ -319,6 +319,8 @@ lvim.plugins = {
   },
 }
 
+lvim.builtin.which_key.mappings["l?"] = { "<cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostics" }
+
 lvim.builtin.which_key.mappings["i"] = {
   name = "Saga",
   r = { "<cmd>lua require'lspsaga.rename'.rename()<CR>", "Rename" },
