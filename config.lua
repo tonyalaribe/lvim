@@ -55,6 +55,7 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 20
 vim.opt.spell = true
 vim.opt.spelllang = "en_us"
+vim.opt.relativenumber = false -- set relative numbered lines
 vim.g.italic_comments = true -- italic comments(Default: true)
 vim.g.italic_keywords = true -- italic keywords(Default: true)
 vim.g.italic_functions = true -- italic functions(Default: false)
